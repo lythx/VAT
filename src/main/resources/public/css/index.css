@@ -1,0 +1,54 @@
+:root{
+    --żakus: 'sus';
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: var(--żakus);
+}
+
+#wrapper{
+    width:100vw;
+    height:100vh;
+    display: flex;
+    flex-flow:column;
+    background: gray;
+}
+
+#formwrapper{
+    align-self: center;
+    justify-self: center;
+    width:300px;
+    height:400px;
+    display:flex;
+    flex-flow:column;
+    justify-content: center;
+    border:1px solid black;
+    border-radius: 20px;
+}
+
+#formwrapper>button{
+    width:150px;
+}
+
+#formwrapper>input{
+    width:150px;
+}
+
+#table{
+    width:100%;
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 0.5fr 1fr 1fr 1fr 1fr 1fr;
+    height:min-content;
+}
+
+#table>*{
+    text-align: center;
+    border:1px solid blue;
+    height:80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

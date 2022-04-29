@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/search.js" defer></script>
+</head>
+<body>
+<div id="wrapper">
+    <button onclick="generateCars()">Generuj losowo auta</button>
+    <a href="index.html" style="display: block;">strona index</a>
+    <a href="cars.html" style="display: block;">update/delete cars</a>
+    faktura za wszystkie auta
+    <button onclick="generateAllCarsInvoice()">genruj fakturę</button>
+    <label>Rok:<input type="number" id="year"><button onclick="generateYearInvoice()">generuj fakturę za dany rok</button></label>
+    <label>Cena:<input id="costBot">-<input id="costTop"><button onclick="generateCostInvoice()">generuj fakturę w danej cenie</button></label>
+    <div id="table">
+
+    </div>
+</div>
+
+</body>
+</html>

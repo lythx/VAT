@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js" defer></script>
+</head>
+<body>
+<div id="wrapper">
+        <label for="model">model:</label>
+        <input id="model">
+        <br>
+        <label for="year">rok:</label>
+        <input id="year" type="number">
+        <br>
+        <label>
+            poduszki powietrzne: kierowca|pasażer|tylna kanapa|boczne z tyłu:
+            <input type="checkbox" id="kier">
+            <input type="checkbox" id="pas">
+            <input type="checkbox" id="tyl">
+            <input type="checkbox" id="bok">
+        </label>
+        <br>
+        <label for="color">kolor:</label>
+        <input type="color" id="color">
+        <br>
+        <div id="submit" onclick="add()">Send</div>
+        <a href="cars.html">Cars</a>
+        <a href="admin.html">Admin</a>
+        <a href="search.html">Search</a>
+</div>
+</body>
+</html>
