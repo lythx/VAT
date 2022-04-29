@@ -48,6 +48,14 @@ public class Car {
         return this.year;
     }
 
+    public ArrayList<Airbag> getAirbag(){
+        return airbag;
+    }
+
+    public String getColor(){
+        return color;
+    }
+
     public void setModel(String model){
         this.model = model;
     }

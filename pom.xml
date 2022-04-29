@@ -29,7 +29,7 @@
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>3.0.3</version>
                 <configuration>
-                    <appName>VAT</appName>
+                    <appName>vatszymonzuk</appName>
                 </configuration>
             </plugin>
         </plugins>

@@ -123,9 +123,26 @@ public class App {
             String path = "invoices/"+ car.getUuid() + ".pdf";
             PdfWriter.getInstance(document, new FileOutputStream(path));
             document.open();
-            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-            Chunk chunk = new Chunk("FAKTURA dla: " + car.getUuid(), font); // akapit
+            Font headerFont = FontFactory.getFont(FontFactory.COURIER, 20, BaseColor.BLACK);
+            Chunk chunk = new Chunk("FAKTURA dla: " + car.getUuid(), headerFont); // akapit
             document.add(chunk);
+            Font bigFont = FontFactory.getFont(FontFactory.COURIER, 30, BaseColor.BLACK);
+            Chunk chunk1 = new Chunk("Model: " + car.getModel(), bigFont); // akapit
+            document.add(chunk1);
+            Font coloredFont = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Chunk chunk2 = new Chunk("FAKTURA dla: " + car.getColor(), coloredFont); // akapit
+            document.add(chunk2);
+            Font font =  FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Chunk chunk3 = new Chunk("rok: " + car.getYear(), font);
+            document.add(chunk3);
+            Chunk chunk4 = new Chunk("poduszka: kierowca - " + car.getAirbag());
+            document.add(chunk4);
+            Chunk chunk5 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            document.add(chunk5);
+            Chunk chunk6 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            document.add(chunk6);
+            Chunk chunk7 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            document.add(chunk7);
             document.close();
             car.setInvoice(true);
             return gson.toJson("faktura wygenerowana");
