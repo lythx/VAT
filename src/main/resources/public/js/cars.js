@@ -1,5 +1,4 @@
 const get = async ()=>{
-    console.log('e')
     const options = {
         method: "POST"
     };
@@ -12,8 +11,10 @@ const get = async ()=>{
 
 const updateCar=async(i)=>{
     const uuid = document.querySelectorAll(`.row${i}`)[1].innerHTML
-    const model = prompt('Podaj model')
-    const year = prompt('Podaj rok')
+    generatePrompt()
+    const [model, year] = onclikcenter
+    // const model = prompt('Podaj model')
+    // const year = prompt('Podaj rok')
     const body = JSON.stringify({
         uuid,
         model,
@@ -30,6 +31,10 @@ const updateCar=async(i)=>{
         await response
         generateTable()
     }
+}
+
+const generatePrompt = () => {
+
 }
 
 const deleteCar = async (i) =>{

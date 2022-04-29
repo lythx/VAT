@@ -1,3 +1,5 @@
+import com.itextpdf.text.BaseColor;
+
 import java.util.ArrayList;
 import java.util.UUID;
 

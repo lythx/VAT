@@ -5,4 +5,11 @@ class Airbag {
         this.name = name;
         this.value = value;
     }
+
+    public String getName() {
+        return name;
+    }
+    public boolean getValue() {
+        return value;
+    }
 }

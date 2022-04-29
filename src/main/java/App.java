@@ -12,6 +12,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -23,10 +24,40 @@ public class App {
     static ArrayList<String> models = new ArrayList<>();
     static ArrayList<String> airbagTypes = new ArrayList<>();
 
+    static ArrayList<String> colors = new ArrayList<>();
+
+    static String allCarsInvoicePath;
+
+    static String yearInvoicePath;
+
+    static String priceInvoicePath;
+
+    static HashMap<String, BaseColor> baseColors = new HashMap<>() {{
+        put("red", BaseColor.RED);
+        put("blue", BaseColor.BLUE);
+        put("yellow", BaseColor.YELLOW);
+        put("black", BaseColor.WHITE);
+        put("orange", BaseColor.ORANGE);
+        put("green", BaseColor.GREEN);
+        put("magenta", BaseColor.MAGENTA);
+        put("pink", BaseColor.PINK);
+        put("white", BaseColor.WHITE);
+    }};
+
     public static void main(String[] args) {
 //        port(5000);
         port(getHerokuPort());
         staticFiles.location("/public");
+
+        colors.add("red");
+        colors.add("blue");
+        colors.add("yellow");
+        colors.add("black");
+        colors.add("orange");
+        colors.add("green");
+        colors.add("magenta");
+        colors.add("pink");
+        colors.add("white");
 
         models.add("Fiat");
         models.add("Renault");
@@ -101,8 +132,7 @@ public class App {
                     airbag.add(a);
                     System.out.println(airbag);
                 }
-                int randColor = rand.nextInt(0xffffff + 1);
-                String color = String.format("#%06x", randColor);
+                String color = colors.get(rand.nextInt(colors.size()));
                 Car car = new Car(uuid, model, year, airbag, color);
                 cars.add(car);
             }
@@ -123,26 +153,30 @@ public class App {
             String path = "invoices/"+ car.getUuid() + ".pdf";
             PdfWriter.getInstance(document, new FileOutputStream(path));
             document.open();
-            Font headerFont = FontFactory.getFont(FontFactory.COURIER, 20, BaseColor.BLACK);
-            Chunk chunk = new Chunk("FAKTURA dla: " + car.getUuid(), headerFont); // akapit
+            Font headerFont = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
+            Paragraph chunk = new Paragraph("FAKTURA dla: " + car.getUuid(), headerFont); // akapit
             document.add(chunk);
             Font bigFont = FontFactory.getFont(FontFactory.COURIER, 30, BaseColor.BLACK);
-            Chunk chunk1 = new Chunk("Model: " + car.getModel(), bigFont); // akapit
+            Paragraph chunk1 = new Paragraph("Model: " + car.getModel(), bigFont); // akapit
             document.add(chunk1);
-            Font coloredFont = FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
-            Chunk chunk2 = new Chunk("FAKTURA dla: " + car.getColor(), coloredFont); // akapit
+            BaseColor baseColor = baseColors.get(car.getColor());
+            Font coloredFont = FontFactory.getFont(FontFactory.COURIER, 15, baseColor);
+            Paragraph chunk2 = new Paragraph("Kolor: " + car.getColor(), coloredFont); // akapit
             document.add(chunk2);
             Font font =  FontFactory.getFont(FontFactory.COURIER, 15, BaseColor.BLACK);
-            Chunk chunk3 = new Chunk("rok: " + car.getYear(), font);
+            Paragraph chunk3 = new Paragraph("rok: " + car.getYear(), font);
             document.add(chunk3);
-            Chunk chunk4 = new Chunk("poduszka: kierowca - " + car.getAirbag());
+            ArrayList<Airbag> airbags = car.getAirbag();
+            Paragraph chunk4 = new Paragraph("poduszka: " + airbags.get(0).getName() + " - " + car.getAirbag().get(0).getValue());
             document.add(chunk4);
-            Chunk chunk5 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            Paragraph chunk5 = new Paragraph("poduszka: " + airbags.get(1).getName() + " - " + car.getAirbag().get(1).getValue());
             document.add(chunk5);
-            Chunk chunk6 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            Paragraph chunk6 = new Paragraph("poduszka: " + airbags.get(2).getName() + " - " + car.getAirbag().get(2).getValue());
             document.add(chunk6);
-            Chunk chunk7 = new Chunk("poduszka: pasazer - " + car.getAirbag());
+            Paragraph chunk7 = new Paragraph("poduszka: " + airbags.get(3).getName() + " - " + car.getAirbag().get(3).getValue());
             document.add(chunk7);
+//            Image img = Image.getInstance("path_to_image.jpg");
+//            document.add(img);
             document.close();
             car.setInvoice(true);
             return gson.toJson("faktura wygenerowana");
@@ -161,8 +195,8 @@ public class App {
             Gson gson = new Gson();
             String seller = "Sprzedawca";
             String buyer = "Kupujacy";
-            Invoices invoices = new Invoices(seller, buyer, cars);
-            invoices.generateInvoice();
+            Invoices invoices = new Invoices(seller, buyer, cars, "Faktura za wszystkie auta");
+            allCarsInvoicePath = invoices.generateInvoice();
             return gson.toJson("faktura wygenerowana");
         });
 
@@ -179,8 +213,8 @@ public class App {
             for(int i = 0; i < cars.size(); i++)
                 if(cars.get(i).getCustomDate().getYear() == reqHandler.getYear())
                     yearCars.add(cars.get(i));
-            Invoices invoices = new Invoices(seller, buyer, yearCars);
-            invoices.generateInvoice();
+            Invoices invoices = new Invoices(seller, buyer, yearCars, "Faktura za auta z roku: " + reqHandler.getYear());
+            yearInvoicePath =  invoices.generateInvoice();
             return gson.toJson("faktura za rok wygenerowana");
         });
 
@@ -196,9 +230,36 @@ public class App {
                 if (price >= reqHandler.getBottom() && price <= reqHandler.getTop())
                     priceCars.add(cars.get(i));
             }
-            Invoices invoices = new Invoices(seller, buyer, priceCars);
-            invoices.generateInvoice();
+            Invoices invoices = new Invoices(seller, buyer, priceCars, "Faktura za auta w cenach: " + reqHandler.getBottom() + "-" + reqHandler.getTop());
+            priceInvoicePath = invoices.generateInvoice();
             return gson.toJson("faktura za cenę wygenerowana");
+        });
+
+        get("/getallcarsinvoice", (req,res) -> {
+            Gson gson = new Gson();
+            res.type("application/octet-stream"); //
+            res.header("Content-Disposition", "attachment; filename=plik.pdf"); // nagłówek
+            OutputStream outputStream = res.raw().getOutputStream();
+            outputStream.write(Files.readAllBytes(Path.of(allCarsInvoicePath))); // response pliku do przeglądarki
+            return gson.toJson("faktura pobrana");
+        });
+
+        get("/getyearinvoice", (req,res) -> {
+            Gson gson = new Gson();
+            res.type("application/octet-stream"); //
+            res.header("Content-Disposition", "attachment; filename=plik.pdf"); // nagłówek
+            OutputStream outputStream = res.raw().getOutputStream();
+            outputStream.write(Files.readAllBytes(Path.of(yearInvoicePath))); // response pliku do przeglądarki
+            return gson.toJson("faktura pobrana");
+        });
+
+        get("/getpriceinvoice", (req,res) -> {
+            Gson gson = new Gson();
+            res.type("application/octet-stream"); //
+            res.header("Content-Disposition", "attachment; filename=plik.pdf"); // nagłówek
+            OutputStream outputStream = res.raw().getOutputStream();
+            outputStream.write(Files.readAllBytes(Path.of(priceInvoicePath))); // response pliku do przeglądarki
+            return gson.toJson("faktura pobrana");
         });
 
         get("/test", (req, res) -> "test");
